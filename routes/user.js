@@ -7,7 +7,7 @@ const User = require("../model/user.js");
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-//signup
+//signu
 router.post("/api/user/signup", function(req, res) {
   var saltRounds = 0;
   console.log(req.body);
@@ -20,7 +20,7 @@ router.post("/api/user/signup", function(req, res) {
         LastName: "West",
         Email: req.body.email,
         Password: hash,
-        Role: "developer"
+        Role: "non-admin"
       });
 
       new_user
@@ -50,7 +50,9 @@ router.post("/api/user/signin", function(req, res) {
         }
         if (result) {
           console.log(result);
-          return res.status(200).json({ success: "Welcome!" });
+          return res
+            .status(200)
+            .json({ success: "Welcome!", user_type: user.Role });
         }
       });
     })
