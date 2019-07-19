@@ -20,7 +20,7 @@ app.use("/", donation);
 
 const db = "mongodb://localhost:27017/mongo-project";
 
-mongoose.connect(db, err => {
+mongoose.connect(db, { useNewUrlParser: true }, err => {
   if (err) {
     console.log("Error:" + err);
   } else {
