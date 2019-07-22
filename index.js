@@ -4,12 +4,13 @@ const mongoose = require("mongoose");
 const user = require("./routes/user");
 const donation = require("./routes/donation");
 
-//use cors
+//enable permission for cors
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   next();
 });
