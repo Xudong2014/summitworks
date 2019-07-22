@@ -50,13 +50,11 @@ router.post("/api/user/signin", function(req, res) {
         }
         if (result) {
           console.log(result);
-          return res
-            .status(200)
-            .json({
-              success: "Welcome!",
-              user_type: user.Role,
-              full_name: user.FirstName + " " + user.LastName
-            });
+          return res.status(200).json({
+            success: "Welcome!",
+            user_type: user.Role,
+            full_name: user.FirstName + " " + user.LastName
+          });
         }
       });
     })
