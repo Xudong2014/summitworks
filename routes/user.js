@@ -7,18 +7,18 @@ const User = require("../model/user.js");
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-//signu
+//signup
 router.post("/api/user/signup", function(req, res) {
   var saltRounds = 0;
   console.log(req.body);
-  bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+  bcrypt.hash(req.body.Password, saltRounds, function(err, hash) {
     if (err) {
       return res.status(500).json({ error: err });
     } else {
       const new_user = new User({
-        FirstName: "John",
-        LastName: "West",
-        Email: req.body.email,
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+        Email: req.body.Email,
         Password: hash,
         Role: "non-admin"
       });
@@ -27,7 +27,7 @@ router.post("/api/user/signup", function(req, res) {
         .save()
         .then(function(result) {
           console.log(result);
-          res.status(200).json({ success: "New user has been created" });
+          res.status(200).json({ success: "New Non-Admin User has been created" });
         })
         .catch(error => {
           console.log("Catch Signup Error");
@@ -66,9 +66,31 @@ router.post("/api/user/signin", function(req, res) {
 
 //Save
 router.post("/api/user", function(req, res, next) {
-  User.create(req.body, function(err, user) {
-    if (err) return next(err);
-    res.json(user);
+  var saltRounds = 0;
+  console.log(req.body);
+  bcrypt.hash(req.body.Password, saltRounds, function(err, hash) {
+    if (err) {
+      return res.status(500).json({ error: err });
+    } else {
+      const new_user = new User({
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+        Email: req.body.Email,
+        Password: hash,
+        Role: req.body.Role
+      });
+
+      new_user
+        .save()
+        .then(function(result) {
+          console.log(result);
+          res.status(200).json({ success: "New user has been created" });
+        })
+        .catch(error => {
+          console.log("Catch Create Error");
+          res.status(500).json({ error: err });
+        });
+    }
   });
 });
 
@@ -91,8 +113,29 @@ router.get("/api/user/:id", function(req, res, next) {
 //Update by id
 router.put("/api/user/:id", function(req, res, next) {
   User.findByIdAndUpdate(req.params.id, req.body, function(err, user) {
-    if (err) return next(err);
-    res.json(user);
+    var saltRounds = 0;
+    console.log(req.body);
+    bcrypt.hash(req.body.Password, saltRounds, function(err, hash) {
+      if (err) {
+        return res.status(500).json({ error: err });
+      } else {
+        user.Role = req.body.Role;
+        user.FirstName = req.body.FirstName;
+        user.LastName = req.body.LastName;
+        user.Email = req.body.Email;
+        user.Password = hash;
+        user
+          .save()
+          .then(function(result) {
+            console.log(result);
+            res.status(200).json({ success: "User has been updated !" });
+          })
+          .catch(error => {
+            console.log("Catch Edit Error");
+            res.status(500).json({ error: err });
+          });
+      }
+    });
   });
 });
 
